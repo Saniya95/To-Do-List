@@ -4,18 +4,20 @@ import java.util.Properties
 plugins {
     id("com.android.application")
     id("kotlin-android")
-    // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id("dev.flutter.flutter-gradle-plugin")
 }
 
 val keystoreProperties = Properties()
 val keystorePropertiesFile = rootProject.file("key.properties")
+
 if (keystorePropertiesFile.exists()) {
-    FileInputStream(keystorePropertiesFile).use { keystoreProperties.load(it) }
+    FileInputStream(keystorePropertiesFile).use {
+        keystoreProperties.load(it)
+    }
 }
 
 android {
-    namespace = "com.ahmed.todoapp"
+    namespace = "com.ahmed.todoapp2026"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = "26.3.11579264"
 
@@ -29,11 +31,11 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.ahmed.todoapp"
+        applicationId = "com.ahmed.todoapp2026"
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
-        versionCode = flutter.versionCode
-        versionName = flutter.versionName
+        versionCode = 4
+        versionName = "1.0.4"
     }
 
     signingConfigs {
@@ -49,12 +51,12 @@ android {
 
     buildTypes {
         release {
-            signingConfig =
-                if (keystorePropertiesFile.exists()) {
-                    signingConfigs.getByName("release")
-                } else {
-                    signingConfigs.getByName("debug")
-                }
+            if (!keystorePropertiesFile.exists()) {
+                throw GradleException("Missing android/key.properties for release signing")
+            }
+
+            signingConfig = signingConfigs.getByName("release")
+            isDebuggable = false
         }
     }
 }
